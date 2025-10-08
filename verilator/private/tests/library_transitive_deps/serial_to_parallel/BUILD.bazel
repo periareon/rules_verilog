@@ -1,0 +1,29 @@
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("//verilator:verilator_cc_library.bzl", "verilator_cc_library")
+load("//verilog:verilog_library.bzl", "verilog_library")
+
+# Serial-to-parallel converter (depends on shift_register, which transitively depends on d_register)
+verilog_library(
+    name = "serial_to_parallel",
+    srcs = [
+        "serial_to_parallel.sv",
+    ],
+    deps = [
+        "//verilator/private/tests/library_transitive_deps/shift_register",
+    ],
+)
+
+verilator_cc_library(
+    name = "serial_to_parallel_verilator",
+    module = ":serial_to_parallel",
+)
+
+cc_test(
+    name = "serial_to_parallel_test",
+    srcs = [
+        "serial_to_parallel_test.cc",
+    ],
+    deps = [
+        ":serial_to_parallel_verilator",
+    ],
+)

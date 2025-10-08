@@ -12,6 +12,14 @@
 #include <string>
 #include <vector>
 
+#ifndef _WIN32
+#include <sys/wait.h>
+#else
+#include <windows.h>
+#define popen _popen
+#define pclose _pclose
+#endif
+
 #include "tools/cpp/runfiles/runfiles.h"
 
 namespace fs = std::filesystem;
@@ -36,6 +44,9 @@ struct Args {
 
     /** The optional headers output dir */
     std::string output_hdrs;
+
+    /** Whether to capture subprocess output */
+    bool capture_output = false;
 
     /** Direct arguments to verilator (anything after `--`) */
     std::vector<std::string> verilator_args;
@@ -152,6 +163,8 @@ int parse_args(Args& out_args, int argc, char* argv[], Runfiles* runfiles) {
             // Length of "--output_hdrs="
             int len = 14;
             args.output_hdrs = arg.substr(len);
+        } else if (arg == "--capture_output") {
+            args.capture_output = true;
         } else {
             std::cerr << "Error: Unknown argument: " << arg << std::endl;
             return 1;
@@ -338,6 +351,56 @@ int copy_and_filter_outputs(const std::string& output_dir,
     return 0;
 }
 
+/**
+ * @brief Executes a command, optionally capturing output.
+ *
+ * This function provides cross-platform support for Windows and POSIX systems:
+ * - Windows: Uses _popen/_pclose (returns exit code directly)
+ * - POSIX: Uses popen/pclose (returns status that needs WEXITSTATUS decoding)
+ *
+ * @param cmd The command to execute.
+ * @param capture_output Whether to capture stdout/stderr.
+ * @param captured_output Output parameter to store captured output.
+ * @return The exit code of the command.
+ */
+int execute_command(const std::string& cmd, bool capture_output,
+                    std::string& captured_output) {
+    if (!capture_output) {
+        // No capture needed, use system() directly
+        return std::system(cmd.c_str());
+    }
+
+    // Capture output using popen/pclose (platform-specific)
+    // Redirect stderr to stdout so we capture both
+    std::string full_cmd = cmd + " 2>&1";
+    FILE* pipe = popen(full_cmd.c_str(), "r");
+
+    if (!pipe) {
+        std::cerr << "Error: Failed to execute command" << std::endl;
+        return 1;
+    }
+
+    // Read output
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        captured_output += buffer;
+    }
+
+    int status = pclose(pipe);
+#ifdef _WIN32
+    return status;
+#else
+    // Extract the actual exit code using WEXITSTATUS
+    if (WIFEXITED(status)) {
+        return WEXITSTATUS(status);
+    } else if (WIFSIGNALED(status)) {
+        return 128 + WTERMSIG(status);
+    }
+
+    return status;
+#endif
+}
+
 int main(int argc, char* argv[]) {
     // Check if we should load arguments from a file
     const char* args_file_env =
@@ -426,8 +489,31 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Execute verilator command.
-    int result = std::system(cmd.c_str());
+    // Execute verilator command with optional output capture
+    std::string captured_output;
+    int result = execute_command(cmd, args.capture_output, captured_output);
+
+    // Print captured output if needed
+    if (args.capture_output && !captured_output.empty()) {
+        // Check if we should print the output
+        bool should_print = false;
+
+        // Print if there was an error
+        if (result != 0) {
+            should_print = true;
+        }
+
+        // Print if debug environment variable is set
+        const char* debug_env = std::getenv("RULES_VERILOG_VERILATOR_DEBUG");
+        if (debug_env != nullptr) {
+            should_print = true;
+        }
+
+        if (should_print) {
+            std::cout << captured_output;
+        }
+    }
+
     if (result != 0) {
         return result;
     }

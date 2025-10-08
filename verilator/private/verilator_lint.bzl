@@ -38,6 +38,7 @@ def _verilator_lint_aspect_impl(target, ctx):
     args = ctx.actions.args()
     args.add(verilator_toolchain.verilator, format = "--verilator=%s")
     args.add_all(direct_srcs, format_each = "--src=%s")
+    args.add("--capture_output")
 
     # Add delimiter before verilator arguments
     args.add("--")
@@ -103,6 +104,7 @@ def _verilator_lint_test_impl(ctx):
     test_args.append("--verilator={}".format(_rlocationpath(verilator_toolchain.verilator, ctx.workspace_name)))
     for path in verilog_files:
         test_args.append("--src={}".format(path))
+    test_args.append("--capture_output")
 
     # Add delimiter before verilator arguments
     test_args.append("--")

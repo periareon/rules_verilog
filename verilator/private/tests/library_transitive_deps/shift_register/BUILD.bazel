@@ -1,0 +1,12 @@
+load("//verilog:verilog_library.bzl", "verilog_library")
+
+verilog_library(
+    name = "shift_register",
+    srcs = [
+        "shift_register.sv",
+    ],
+    visibility = ["//verilator/private/tests/library_transitive_deps:__subpackages__"],
+    deps = [
+        "//verilator/private/tests/library_transitive_deps/d_register",
+    ],
+)

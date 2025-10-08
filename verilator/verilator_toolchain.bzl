@@ -42,7 +42,7 @@ verilator_toolchain = rule(
             mandatory = True,
         ),
         "vopts": attr.string_list(
-            doc = "Extra flags to pass to `VerilatorCompile` actions.",
+            doc = "Extra flags to pass to `Verilate` actions.",
         ),
     },
 )
