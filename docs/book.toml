@@ -6,4 +6,4 @@ src = "src"
 title = "rules_verilog"
 
 [output.html]
-git-repository-url = "https://github.com/periareon/rules_verilogr"
+git-repository-url = "https://github.com/periareon/rules_verilog"
