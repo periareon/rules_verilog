@@ -4,8 +4,6 @@ Bazel rules for [Verilog](https://en.wikipedia.org/wiki/Verilog) / [SystemVerilo
 
 ## Setup
 
-## Setup
-
 ```python
 bazel_dep(name = "rules_verilog", version = "{version}")
 ```
