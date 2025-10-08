@@ -1,0 +1,23 @@
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("//verilator:verilator_cc_library.bzl", "verilator_cc_library")
+load("//verilog:verilog_library.bzl", "verilog_library")
+
+verilog_library(
+    name = "adder",
+    srcs = [
+        "adder.sv",
+    ],
+)
+
+verilator_cc_library(
+    name = "adder_verilator",
+    module = ":adder",
+)
+
+cc_test(
+    name = "adder_test",
+    srcs = ["adder_test.cc"],
+    deps = [
+        ":adder_verilator",
+    ],
+)

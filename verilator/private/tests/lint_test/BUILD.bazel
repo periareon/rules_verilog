@@ -1,0 +1,39 @@
+load("//verilator:verilator_lint_test.bzl", "verilator_lint_test")
+load("//verilog:verilog_library.bzl", "verilog_library")
+
+# Simple counter module
+verilog_library(
+    name = "counter",
+    srcs = ["counter.sv"],
+)
+
+verilator_lint_test(
+    name = "counter_lint_test",
+    module = ":counter",
+)
+
+# Simple mux module
+verilog_library(
+    name = "mux",
+    srcs = ["mux.sv"],
+)
+
+verilator_lint_test(
+    name = "mux_lint_test",
+    module = ":mux",
+)
+
+# Top module with transitive dependencies
+verilog_library(
+    name = "top_module",
+    srcs = ["top_module.sv"],
+    deps = [
+        ":counter",
+        ":mux",
+    ],
+)
+
+verilator_lint_test(
+    name = "top_module_lint_test",
+    module = ":top_module",
+)

@@ -1,1 +1,1 @@
-# rules_verilator
+# rules_verilog

@@ -1,0 +1,22 @@
+load("//verilator:verilator_toolchain.bzl", "verilator_toolchain")
+
+verilator_toolchain(
+    name = "verilator_toolchain",
+    libverilator = "@verilator//:libverilator",
+    linkopts = select({
+        "@platforms//os:macos": [
+            # https://github.com/verilator/verilator/pull/3823
+            "-Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv",
+        ],
+        "//conditions:default": [],
+    }),
+    verilator = "@verilator//:verilator_bin",
+    visibility = ["//visibility:public"],
+)
+
+toolchain(
+    name = "toolchain",
+    toolchain = ":verilator_toolchain",
+    toolchain_type = "//verilator:toolchain_type",
+    visibility = ["//visibility:public"],
+)
