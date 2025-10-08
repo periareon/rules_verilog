@@ -1,15 +1,17 @@
-"""Verilator rules.
+"""# Verilator rules.
 
-This module provides rules and aspects for working with Verilator,
-a fast Verilog/SystemVerilog simulator and linter.
+Bazel rules for [Verilator](https://verilator.org/guide/latest/index.html)
 
-Main rules:
-  - verilator_cc_library: Compiles Verilog to a C++ library
-  - verilator_lint_test: Creates a test that lints Verilog code
-  - verilator_toolchain: Defines a Verilator toolchain
+## Setup
 
-Aspects:
-  - verilator_lint_aspect: Lints Verilog code transitively
+```python
+bazel_dep(name = "rules_verilog", version = "{version}")
+
+register_toolchain(
+    # Define a custom toolchain or use the `rules_verilog` provided toolchain.
+    "@rules_verilog//verilator/toolchain",
+)
+```
 """
 
 load(

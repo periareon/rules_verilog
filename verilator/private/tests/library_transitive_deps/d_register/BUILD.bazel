@@ -1,0 +1,9 @@
+load("//verilog:verilog_library.bzl", "verilog_library")
+
+verilog_library(
+    name = "d_register",
+    srcs = [
+        "d_register.sv",
+    ],
+    visibility = ["//verilator/private/tests/library_transitive_deps:__subpackages__"],
+)
