@@ -164,6 +164,11 @@
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><!-- Generated with Stardoc: http://skydoc.bazel.build -->
 <h1 id="verilog-rules"><a class="header" href="#verilog-rules">verilog rules</a></h1>
+<p>Bazel rules for <a href="https://en.wikipedia.org/wiki/Verilog">Verilog</a> / <a href="https://en.wikipedia.org/wiki/SystemVerilog">SystemVerilog</a>.</p>
+<h2 id="setup-1"><a class="header" href="#setup-1">Setup</a></h2>
+<h2 id="setup-2"><a class="header" href="#setup-2">Setup</a></h2>
+<pre><code class="language-python">bazel_dep(name = "rules_verilog", version = "{version}")
+</code></pre>
 <h2 id="rules"><a class="header" href="#rules">Rules</a></h2>
 <ul>
 <li><a href="verilog.html#verilog_library">verilog_library</a></li>
@@ -207,19 +212,16 @@ VerilogInfo(<a href="verilog.html#VerilogInfo-compile_data">compile_data</a>, <a
 <tr><td style="text-align: left"><a id="VerilogInfo-top"></a>top</td><td style="text-align: left">File: The source file that represents the module top. The file name is expected to match the module name.</td></tr>
 </tbody></table>
 </div><div style="break-before: page; page-break-before: always;"></div><!-- Generated with Stardoc: http://skydoc.bazel.build -->
-<p>Verilator rules.</p>
-<p>This module provides rules and aspects for working with Verilator,
-a fast Verilog/SystemVerilog simulator and linter.</p>
-<p>Main rules:</p>
-<ul>
-<li>verilator_cc_library: Compiles Verilog to a C++ library</li>
-<li>verilator_lint_test: Creates a test that lints Verilog code</li>
-<li>verilator_toolchain: Defines a Verilator toolchain</li>
-</ul>
-<p>Aspects:</p>
-<ul>
-<li>verilator_lint_aspect: Lints Verilog code transitively</li>
-</ul>
+<h1 id="verilator-rules"><a class="header" href="#verilator-rules">Verilator rules.</a></h1>
+<p>Bazel rules for <a href="https://verilator.org/guide/latest/index.html">Verilator</a></p>
+<h2 id="setup-3"><a class="header" href="#setup-3">Setup</a></h2>
+<pre><code class="language-python">bazel_dep(name = "rules_verilog", version = "{version}")
+
+register_toolchain(
+    # Define a custom toolchain or use the `rules_verilog` provided toolchain.
+    "@rules_verilog//verilator/toolchain",
+)
+</code></pre>
 <h2 id="rules-1"><a class="header" href="#rules-1">Rules</a></h2>
 <ul>
 <li><a href="verilator.html#verilator_cc_library">verilator_cc_library</a></li>
@@ -235,17 +237,19 @@ a fast Verilog/SystemVerilog simulator and linter.</p>
 <pre>
 load("@rules_verilog//verilator:defs.bzl", "verilator_cc_library")
 
-verilator_cc_library(<a href="verilator.html#verilator_cc_library-name">name</a>, <a href="verilator.html#verilator_cc_library-data">data</a>, <a href="verilator.html#verilator_cc_library-copts">copts</a>, <a href="verilator.html#verilator_cc_library-linkopts">linkopts</a>, <a href="verilator.html#verilator_cc_library-module">module</a>, <a href="verilator.html#verilator_cc_library-vopts">vopts</a>)
+verilator_cc_library(<a href="verilator.html#verilator_cc_library-name">name</a>, <a href="verilator.html#verilator_cc_library-data">data</a>, <a href="verilator.html#verilator_cc_library-linkopts">linkopts</a>, <a href="verilator.html#verilator_cc_library-module">module</a>)
 </pre>
 <p>Compiles a Verilog module to a C++ library using Verilator.</p>
-<p>This rule collects all transitive Verilog dependencies, compiles them to
-C++ sources using Verilator, then compiles and links them into a static library.</p>
-<p>Example:
-verilog_library(
-name = "my_module",
-srcs = ["my_module.sv"],
-)</p>
-<pre><code>verilator_cc_library(
+<p>This rule uses an aspect to compile each Verilog module in the dependency tree
+to C++ object files using Verilator's hierarchical compilation mode, then links
+them all together into a single static library.</p>
+<p>Example:</p>
+<pre><code class="language-python">verilog_library(
+    name = "my_module",
+    srcs = ["my_module.sv"],
+)
+
+verilator_cc_library(
     name = "my_module_cc",
     module = ":my_module",
 )
@@ -254,10 +258,8 @@ srcs = ["my_module.sv"],
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">Name</th><th style="text-align: left">Description</th><th style="text-align: left">Type</th><th style="text-align: left">Mandatory</th><th style="text-align: left">Default</th></tr></thead><tbody>
 <tr><td style="text-align: left"><a id="verilator_cc_library-name"></a>name</td><td style="text-align: left">A unique name for this target.</td><td style="text-align: left"><a href="https://bazel.build/concepts/labels#target-names">Name</a></td><td style="text-align: left">required</td><td style="text-align: left"></td></tr>
 <tr><td style="text-align: left"><a id="verilator_cc_library-data"></a>data</td><td style="text-align: left">Data used at runtime by the library</td><td style="text-align: left"><a href="https://bazel.build/concepts/labels">List of labels</a></td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
-<tr><td style="text-align: left"><a id="verilator_cc_library-copts"></a>copts</td><td style="text-align: left">List of additional C++ compilation flags</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
 <tr><td style="text-align: left"><a id="verilator_cc_library-linkopts"></a>linkopts</td><td style="text-align: left">List of additional C++ linker flags</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
 <tr><td style="text-align: left"><a id="verilator_cc_library-module"></a>module</td><td style="text-align: left">The top level Verilog module target to compile with Verilator.</td><td style="text-align: left"><a href="https://bazel.build/concepts/labels">Label</a></td><td style="text-align: left">required</td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: left"><a id="verilator_cc_library-vopts"></a>vopts</td><td style="text-align: left">List of additional Verilator flags.</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
 </tbody></table>
 </div>
 <p><a id="verilator_lint_test"></a></p>
@@ -302,7 +304,7 @@ verilator_toolchain(<a href="verilator.html#verilator_toolchain-name">name</a>, 
 <tr><td style="text-align: left"><a id="verilator_toolchain-libverilator"></a>libverilator</td><td style="text-align: left">The Verilator library.</td><td style="text-align: left"><a href="https://bazel.build/concepts/labels">Label</a></td><td style="text-align: left">required</td><td style="text-align: left"></td></tr>
 <tr><td style="text-align: left"><a id="verilator_toolchain-linkopts"></a>linkopts</td><td style="text-align: left">Extra linker flags to pass when linking Verilator outputs.</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
 <tr><td style="text-align: left"><a id="verilator_toolchain-verilator"></a>verilator</td><td style="text-align: left">The Verilator binary.</td><td style="text-align: left"><a href="https://bazel.build/concepts/labels">Label</a></td><td style="text-align: left">required</td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: left"><a id="verilator_toolchain-vopts"></a>vopts</td><td style="text-align: left">Extra flags to pass to <code>VerilatorCompile</code> actions.</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
+<tr><td style="text-align: left"><a id="verilator_toolchain-vopts"></a>vopts</td><td style="text-align: left">Extra flags to pass to <code>Verilate</code> actions.</td><td style="text-align: left">List of strings</td><td style="text-align: left">optional</td><td style="text-align: left"><code>[]</code></td></tr>
 </tbody></table>
 </div>
 <p><a id="verilator_lint_aspect"></a></p>
