@@ -9,7 +9,7 @@ on:
     inputs:
       target:
         description: "The py_reqs_compiler target to run"
-        default: "//python/3rdparty:requirements.update"
+        default: "//tools/requirements:update"
 
 jobs:
   build:
@@ -19,8 +19,6 @@ jobs:
         include:
           - os: linux_x86_64
             runs-on: ubuntu-latest
-          - os: linux_aarch64
-            runs-on: ubuntu-24.04-arm
           - os: macos_aarch64
             runs-on: macos-latest
           - os: windows_x86_64
@@ -49,7 +47,7 @@ jobs:
           echo "<details>" >> "${GITHUB_STEP_SUMMARY}"
           echo "" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
-          cat "python/3rdparty/requirements_${{ matrix.os }}.txt" >> "${GITHUB_STEP_SUMMARY}"
+          cat "tools/requirements/requirements_${{ matrix.os }}.txt" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
           echo "" >> "${GITHUB_STEP_SUMMARY}"
           echo "</details>" >> "${GITHUB_STEP_SUMMARY}"

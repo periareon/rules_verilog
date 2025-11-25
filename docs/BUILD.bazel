@@ -3,6 +3,15 @@ load("@rules_rust_mdbook//:defs.bzl", "mdbook", "mdbook_server")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 stardoc(
+    name = "system_rdl",
+    out = "src/system_rdl.md",
+    input = "//system_rdl:defs.bzl",
+    table_of_contents_template = "@io_bazel_stardoc//stardoc:templates/markdown_tables/table_of_contents.vm",
+    tags = ["manual"],
+    deps = ["//system_rdl:defs_bzl"],
+)
+
+stardoc(
     name = "verilator",
     out = "src/verilator.md",
     input = "//verilator:defs.bzl",
@@ -23,6 +32,7 @@ stardoc(
 mdbook(
     name = "book",
     srcs = glob(["src/**/*.md"]) + [
+        ":system_rdl",
         ":verilator",
         ":verilog",
     ],

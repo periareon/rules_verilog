@@ -1,0 +1,8 @@
+# Python requirements
+-r ../../system_rdl/requirements.in
+
+# Development dependencies
+black
+isort
+pylint
+mypy
