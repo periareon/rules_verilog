@@ -6,12 +6,18 @@ current_system_rdl_peakrdl_toolchain(
     name = "current_system_rdl_peakrdl_toolchain",
 )
 
-py_binary(
+alias(
     name = "peakrdl",
+    actual = "peakrdl_wrapper",
+    visibility = ["//visibility:public"],
+)
+
+py_binary(
+    name = "peakrdl_wrapper",
     srcs = [
-        "peakrdl.py",
+        "peakrdl_wrapper.py",
     ],
-    main = "peakrdl.py",
+    main = "peakrdl_wrapper.py",
     deps = [
         ":current_system_rdl_peakrdl_toolchain",
     ],

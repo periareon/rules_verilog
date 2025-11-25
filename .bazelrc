@@ -37,7 +37,34 @@ build --incompatible_autoload_externally=
 build:verilator_lint --aspects=//verilator:verilator_lint_aspect.bzl%verilator_lint_aspect
 build:verilator_lint --output_groups=+verilator_lint_checks
 
-test --config=verilator_lint
+# Enable black for all targets in the workspace
+build:black --aspects=@rules_venv//python/black:defs.bzl%py_black_aspect
+build:black --output_groups=+py_black_checks
+
+# Enable isort for all targets in the workspace
+build:isort --aspects=@rules_venv//python/isort:defs.bzl%py_isort_aspect
+build:isort --output_groups=+py_isort_checks
+build --@rules_venv//python/isort:config=//:.isort.cfg
+
+# Enable mypy for all targets in the workspace
+build:mypy --aspects=@rules_venv//python/mypy:defs.bzl%py_mypy_aspect
+build:mypy --output_groups=+py_mypy_checks
+build --@rules_venv//python/mypy:config=//:.mypy.ini
+
+# Enable pylint for all targets in the workspace
+build:pylint --aspects=@rules_venv//python/pylint:defs.bzl%py_pylint_aspect
+build:pylint --output_groups=+py_pylint_checks
+build --@rules_venv//python/pylint:config=//:.pylintrc.toml
+
+# Define a config that enables all linter aspects.
+build:strict --config=verilator_lint
+build:strict --config=black
+build:strict --config=isort
+build:strict --config=pylint
+build:strict --config=mypy
+
+
+test --config=strict
 
 ###############################################################################
 ## Custom user flags
