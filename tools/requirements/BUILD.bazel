@@ -46,6 +46,7 @@ config_setting(
 )
 
 PLATFORMS = [
+    "linux_aarch64",
     "linux_x86_64",
     "macos_aarch64",
     "windows_x86_64",

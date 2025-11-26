@@ -152,8 +152,8 @@ smmap==5.0.2 \
     --hash=sha256:b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e
     # via gitdb (<6,>=3.0.1)
     # https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl#sha256=b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e
-systemrdl-compiler==1.32.0 \
-    --hash=sha256:2f91bbcfae1f4885a8cc6e6e0a9d96860dd14e39d9088d788c594a962bf26e9c
+systemrdl-compiler==1.32.1 \
+    --hash=sha256:c0699b1fddeebe9db4bef78ca4f540fad6110f9413a2836e28e55ecfbc386313
     # via
     #   peakrdl-cheader (<2,>=1.21.0)
     #   peakrdl-cli (~=1.27)
@@ -162,7 +162,7 @@ systemrdl-compiler==1.32.0 \
     #   peakrdl-regblock (~=1.29)
     #   peakrdl-systemrdl (~=1.30)
     #   peakrdl-uvm (~=1.31)
-    # https://files.pythonhosted.org/packages/47/4e/0fbf92ba75bad6a13e0388d838a085ea4480d2c2b2301e671ae16421e1c8/systemrdl_compiler-1.32.0-cp37-abi3-win_amd64.whl#sha256=2f91bbcfae1f4885a8cc6e6e0a9d96860dd14e39d9088d788c594a962bf26e9c
+    # https://files.pythonhosted.org/packages/d9/99/ac45880cb2f72227757259deed49101f780cc23836f8a4ba84efc98dc704/systemrdl_compiler-1.32.1-cp37-abi3-win_amd64.whl#sha256=c0699b1fddeebe9db4bef78ca4f540fad6110f9413a2836e28e55ecfbc386313
 tomlkit==0.13.3 \
     --hash=sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0
     # via pylint (>=0.10.1)
